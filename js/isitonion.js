@@ -22,8 +22,8 @@ var currentArticle = {
 
 // Store zeroed player information.
 var user = {
-    userAttempts: 0,
-    userStreak : 0
+    attempts: 0,
+    streak : 0
 }
 
 /* Useful web-specific constants. */
@@ -89,7 +89,7 @@ function iterate() {
             // Perform QA to reject certain articles.
             for(var word in badWords) {
                 
-                if(title.indexOf(word) > -1) {
+                if(currentArticle.title.indexOf(word) > -1) {
                     
                     console.log("Warning: That article didn't look right - skipping it.");
                     
@@ -132,7 +132,7 @@ function iterate() {
 function answer(userAnswer) {
     
     // Increment the number of attempts made thus far.
-    user.userAttempts++;
+    user.attempts++;
     
     console.log("User answer: " + userAnswer);
     
@@ -143,7 +143,7 @@ function answer(userAnswer) {
         displayCorrect();
         
         // Increment the user's correct streak.
-        user.userStreak++;
+        user.streak++;
         
     }
     // Failure...
@@ -152,9 +152,13 @@ function answer(userAnswer) {
         displayIncorrect();
         
         // Erase the user's correct streak.
-        user.userStreak = 0;
+        user.streak = 0;
         
     }
+    
+    displayUserAttempts();
+    
+    displayUserStreak();
     
     // Advance to the next article.
     iterate();
@@ -190,5 +194,25 @@ function displayCorrect() {
 function displayIncorrect() {
     
     $('#mark').text('Incorrect');
+    
+}
+
+/**
+ * Provide visual cues to the user to indicate
+ * the state of their streak of correct answers.
+ */
+function displayUserStreak() {
+    
+    $('#user-streak').text(user.streak);
+    
+}
+
+/**
+ * Provide visual cues to the user to indicate
+ * their overall success.
+ */
+function displayUserAttempts() {
+    
+    $('#user-attempts').text(user.attempts);
     
 }
