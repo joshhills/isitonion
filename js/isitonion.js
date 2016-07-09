@@ -93,6 +93,8 @@ function iterate() {
                     
                     console.log("Warning: That article didn't look right - skipping it.");
                     
+                    // Skip!
+                    iterate();
                     return;
                     
                 }
