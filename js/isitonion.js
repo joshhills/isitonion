@@ -35,6 +35,10 @@ const R = {
     NOT_THE_ONION: 'nottheonion'
 }
 
+const badWords = [
+    "Quiz:"
+]
+
 /* MODEL */
 
 /**
@@ -79,11 +83,24 @@ function iterate() {
         // Ensure a response was found.
         if (response != null && response != undefined) {
             
-            // Get the subreddit of the retrieved article.
-            currentArticle.from = response[0].data.children[0].data.subreddit;
-            
             // Get the title of the retrieved article.
             currentArticle.title = response[0].data.children[0].data.title;
+            
+            // Perform QA to reject certain articles.
+            for(var word in badWords) {
+                
+                if(title.indexOf(word) > -1) {
+                    
+                    console.log("Warning: That article didn't look right - skipping it.");
+                    
+                    return;
+                    
+                }
+                
+            }
+            
+            // Get the subreddit of the retrieved article.
+            currentArticle.from = response[0].data.children[0].data.subreddit;
             
             // Get the link of the retrieved article.
             currentArticle.link = response[0].data.children[0].data.link;
