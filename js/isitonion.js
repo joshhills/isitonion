@@ -100,7 +100,7 @@ function iterate() {
             }
             
             // Get the subreddit of the retrieved article.
-            currentArticle.from = response[0].data.children[0].data.subreddit;
+            currentArticle.from = response[0].data.children[0].data.subreddit.toLowerCase();
             
             // Get the link of the retrieved article.
             currentArticle.link = response[0].data.children[0].data.link;
