@@ -33,5 +33,11 @@ firebase.auth().signInAnonymously().catch(function(error) {
 
 // Reguster a listener for sign changes.
 firebase.auth().onAuthStateChanged(function(user) {
-  isSignedIn = user ? true : false;
+  isSignedIn = user.isAnonymous ? true : false;
+});
+
+// Register listener on total correct posts.
+firebase.database().ref('meta/totalcorrect').on('value', function(snapshot) {
+    console.log('Value updated!');
+    $('#total-correct').text(snapshot.val());
 });

@@ -37,8 +37,10 @@ const R = {
 }
 
 const badWords = [
-    "Quiz:",
-    "?"
+    "quiz:",
+    "?",
+    "photos of",
+    "tips for"
 ]
 
 /* MODEL */
@@ -86,14 +88,14 @@ function iterate() {
         if (response != null && response != undefined) {
             
             // Get the title of the retrieved article.
-            currentArticle.title = response[0].data.children[0].data.title;
+            currentArticle.title = response[0].data.children[0].data.title || null;
             
             /* Perform QA to reject certain articles. */
             
             // Ensure title is suitable.
             for(var word in badWords) {
                 
-                if(currentArticle.title.indexOf(word) > -1) {
+                if(currentArticle.title.toLowerCase().indexOf(word.toLowerCase()) > -1) {
                     
                     console.log("Warning: That article didn't look right - skipping it.");
                     
@@ -116,13 +118,13 @@ function iterate() {
             }
             
             // Get the subreddit of the retrieved article.
-            currentArticle.from = response[0].data.children[0].data.subreddit.toLowerCase();
+            currentArticle.from = response[0].data.children[0].data.subreddit.toLowerCase() || null;
             
             // Get the link of the retrieved article.
-            currentArticle.link = response[0].data.children[0].data.link;
+            currentArticle.link = response[0].data.children[0].data.link || null;
             
             // Get a picture if it exists.
-            currentArticle.image = response[0].data.children[0].data.preview.images[0].source.url;
+            currentArticle.image = response[0].data.children[0].data.preview.images[0].source.url || null;
             
             // Ensure the response was valid to some extent.
             if(currentArticle.from == null || currentArticle.title == null) {
@@ -159,9 +161,10 @@ function answer(userAnswer) {
     if(userAnswer == currentArticle.from) {
         
         // Log the result in the RTDB.
-        database().ref('meta').transaction(function(meta) {
-            meta.correct++;
-            return meta;
+        database.ref('meta/totalcorrect').transaction(function(total) {
+            if(total != null) {
+                return total+1;
+            }
         });
         
         // Display that the user was correct.
@@ -175,9 +178,10 @@ function answer(userAnswer) {
     else {
         
         // Log the result in the RTDB.
-        database().ref('meta').transaction(function(meta) {
-            meta.incorrect++;
-            return meta;
+        database.ref('meta/totalincorrect').transaction(function(total) {
+            if(total != null) {
+                return total+1;
+            }
         });
         
         // Display that the user was incorrect.
@@ -217,7 +221,7 @@ function displayNextArticle() {
 function displayPreviousArticle() {
     
     if(currentArticle.image) {
-        $('#thumbnail').attr('src', currentArticle.image);
+        //$('#thumbnail').attr('src', currentArticle.image);
     }
     
 }
@@ -228,7 +232,7 @@ function displayPreviousArticle() {
  */
 function displayCorrect() {
     
-    $('#mark').text('Correct');
+    //$('#mark').text('Correct');
     
 }
 

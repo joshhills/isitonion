@@ -1,28 +1,73 @@
 <html>
+    
     <head>
-        <!-- Meta info -->
+        
+        <!-- Meta Info (SEO) -->
         <title>Is It Onion?</title>
-        <!-- RTDB Tracking -->
+        
+        <!-- Import Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
         <script src="js/firebase.js"></script>
-        <!-- Imports -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/isitonion.js"></script>
+        
+        <!-- Styling -->
+        <link rel="stylesheet" type="text/css" href="css/normalize.css"> 
+        <link rel="stylesheet" type="text/css" href="css/skeleton.css"> 
+        <link rel="stylesheet" type="text/css" href="css/isitonion.css">
+        <link href="https://fonts.googleapis.com/css?family=Bitter:700|Inconsolata" rel="stylesheet">
+        
     </head>
+    
     <body>
-        <div>
-            <p id="article-title">
-                Article title.
-            </p>
-            <p id="mark"></p>
-            <p>Streak: <span id="user-streak">0</span></p>
-            <p>Attempts: <span id="user-attempts">0</span></p>
-            <button onclick="answer(R.THE_ONION)">The Onion</button>
-            <button onclick="answer(R.NOT_THE_ONION)">Not The Onion</button>
-            <img id="thumbnail" src="" alt="The picture representing the article." />
+        
+        <div id="container">
+            
+            <div id="jumbotron" class="row">
+                <p id="toast">IS THIS A FAKE NEWS ARTICLE FROM 'THE ONION'?</p>
+                <p id="article-title">
+                    Hold on, checking social media...
+                </p>
+            </div>
+            
+            <div id="controller" class="row">
+            
+                <div id="buttons" class="four columns">
+                    <button id="onion" onclick="answer(R.THE_ONION)">onion</button>
+                    <button id="nottheonion" onclick="answer(R.NOT_THE_ONION)">Not The Onion</button>
+                </div>
+                
+                <div class="eight columns">
+                    <div class="row">
+                        <div id="statistics-personal" class="analytics six columns">
+                            <img src="img/statistics-personal-icon.png" alt="personal statistics icon, picture of an eye" />
+                            <p>Streak: <span id="user-streak">...</span></p>
+                            <p>Percent correct: <span id="user-percent">...</span></p>
+                        </div>
+
+                        <div id="statistics-global" class="analytics six columns">
+                            <img src="img/statistics-global-icon.png" alt="global statistics icon, picture of a globe" />
+                            <p>People fooled: <span id="user-streak">...</span></p>
+                            <p>Percent Correct: <span id="user-percent">...</span></p>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+            
+            <footer class="row">
+                <p>
+                    Created with malice by <a href="https://twitter.com/joshmarcushills" target="_new">Josh Hills</a>, 2016 | It is unaffiliated with but alludes to <a href="http://theonion.com/" target="_new">‘The Onion’</a> using data taken from <a href="http://reddit.com/r/nottheonion" title="Say goodbye to several hours..." target="_new">‘Reddit’</a>. | This site <a href="https://cookielaw.org/the-cookie-law/" title="See why" target="_self">uses cookies</a>.
+                </p>
+            </footer>
+            
         </div>
+        
+        <!-- Initiate the game. -->
         <script>
             iterate();
         </script>
+        
     </body>
+    
 </html>
