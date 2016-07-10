@@ -8,16 +8,17 @@
  *
  * @name    isitonion
  * @author  mod_ave
- * @version 0.1
+ * @version 0.2
  */
 
 /* Global blueprints. */
 
-// Store the current article as an object grouping.
+// Store the current article as a truncated object.
 var currentArticle = {
     title: null,
     from: null,
-    link: null
+    link: null,
+    image : null
 };
 
 // Store zeroed player information.
@@ -36,7 +37,8 @@ const R = {
 }
 
 const badWords = [
-    "Quiz:"
+    "Quiz:",
+    "?"
 ]
 
 /* MODEL */
@@ -61,12 +63,12 @@ function iterate() {
         // Make API request with contextual options.
         $.ajax(
             {
-                type: 'GET',
+                // type: 'GET',
                 url: HOST_URL + decision + "/random.json",
                 success: function(result) { decodeArticle(result) },
                 error: function() { console.log("Error: Request could not be made.") },
-                timeout: 60000, // No need for any more than a minute.
-                cache: false, // Since results are random and quick, caching is wasteful.
+                // timeout: 60000, // No need for any more than a minute.
+                // cache: false, // Since results are random and quick, caching is wasteful.
                 dataType: 'json' // In case of funky redirects.
                 
             });
@@ -86,7 +88,9 @@ function iterate() {
             // Get the title of the retrieved article.
             currentArticle.title = response[0].data.children[0].data.title;
             
-            // Perform QA to reject certain articles.
+            /* Perform QA to reject certain articles. */
+            
+            // Ensure title is suitable.
             for(var word in badWords) {
                 
                 if(currentArticle.title.indexOf(word) > -1) {
@@ -101,18 +105,31 @@ function iterate() {
                 
             }
             
+            // Reject meta articles.
+            if(response[0].data.children[0].kind.indexOf('self.' + R.THE_ONION) > -1 
+               || response[0].data.children[0].kind.indexOf('self.' + R.NOT_THE_ONION) > -1) {
+                
+                // Skip!
+                iterate();
+                return;
+                
+            }
+            
             // Get the subreddit of the retrieved article.
             currentArticle.from = response[0].data.children[0].data.subreddit.toLowerCase();
             
             // Get the link of the retrieved article.
             currentArticle.link = response[0].data.children[0].data.link;
             
+            // Get a picture if it exists.
+            currentArticle.image = response[0].data.children[0].data.preview.images[0].source.url;
+            
             // Ensure the response was valid to some extent.
             if(currentArticle.from == null || currentArticle.title == null) {
                 console.log("Error: Response missing elements.");
             }
             else {
-                displayArticle();
+                displayNextArticle();
             }
 
         }
@@ -162,6 +179,8 @@ function answer(userAnswer) {
     
     displayUserStreak();
     
+    displayPreviousArticle();
+    
     // Advance to the next article.
     iterate();
     
@@ -172,11 +191,22 @@ function answer(userAnswer) {
 /**
  *  Update the display to reflect the new article.
  */
-function displayArticle() {
+function displayNextArticle() {
 
     // Update the title.
     $('#article-title').text(currentArticle.title);
 
+}
+
+/**
+ *  Unveil the previous article's link and image.
+ */
+function displayPreviousArticle() {
+    
+    if(currentArticle.image) {
+        $('#thumbnail').attr('src', currentArticle.image);
+    }
+    
 }
 
 /**
