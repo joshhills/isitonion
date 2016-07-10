@@ -158,6 +158,12 @@ function answer(userAnswer) {
     // Success...
     if(userAnswer == currentArticle.from) {
         
+        // Log the result in the RTDB.
+        database().ref('meta').transaction(function(meta) {
+            meta.correct++;
+            return meta;
+        });
+        
         // Display that the user was correct.
         displayCorrect();
         
@@ -168,6 +174,13 @@ function answer(userAnswer) {
     // Failure...
     else {
         
+        // Log the result in the RTDB.
+        database().ref('meta').transaction(function(meta) {
+            meta.incorrect++;
+            return meta;
+        });
+        
+        // Display that the user was incorrect.
         displayIncorrect();
         
         // Erase the user's correct streak.
