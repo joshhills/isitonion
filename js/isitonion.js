@@ -88,12 +88,11 @@ function iterate() {
         // Make API request with contextual options.
         $.ajax(
             {
-                // type: 'GET',
+                type: 'GET',
                 url: HOST_URL + decision + "/random.json",
                 success: function(result) { decodeArticle(result) },
                 error: function() { console.log("Error: Request could not be made.") },
-                // timeout: 60000, // No need for any more than a minute.
-                // cache: false, // Since results are random and quick, caching is wasteful.
+                timeout: 30000, // No need for any more than a minute.
                 dataType: 'json' // In case of funky redirects.
                 
             });
