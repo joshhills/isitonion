@@ -18,6 +18,15 @@ body {
     padding: 3rem;
 }
 
+#jumbotron a,
+#jumbotron a:active,
+#jumbotron a:visited {
+    color: #d9ffb3;
+}
+#jumbotron a:hover {
+    color: #f2ffe6;
+}
+
 #toast {
     margin-bottom: 0;
 }
@@ -28,10 +37,30 @@ body {
     line-height: 1.25
 }
 
+#article-title span {
+    font-size: 1.5rem;
+}
+
 #controller {
     background-color: #343434;
     flex-grow: 2;
     padding: 3rem;
+}
+
+button {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    font-size: 2rem;
+    color: #006b3a;
+}
+button img {
+    width: 90%;
+}
+
+button:hover img {
+    -webkit-filter: drop-shadow(3px 3px 0px #222);
+    filter: drop-shadow(3px 3px 0px #222);
 }
 
 .analytics {
@@ -70,7 +99,7 @@ footer p {
 }
 
 /* Larger than mobile */
-@media (max-width: 400px) {
+@media (max-width: 600px) {
     #article-title {
         font-size: 3em;
     }
@@ -78,5 +107,20 @@ footer p {
         margin-bottom: 1rem;
         margin-top: 1rem;
     }
+    .analytics img {
+        max-height: 70px;
+        margin-bottom: 1rem;
+    }
 }
 
+@media (max-width: 550px) {
+ 
+    #onion.columns, #nottheonion.columns {
+        width: 50%;
+        margin-bottom: 2rem;
+    }
+    .analytics p {
+        font-size: 1.75rem;
+    }
+    
+}

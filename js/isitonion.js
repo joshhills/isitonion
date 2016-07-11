@@ -23,11 +23,16 @@ var currentArticle = {
 
 // Store zeroed player information.
 var user = {
-    attempts: 0,
+    correct: 0,
+    incorrect: 0,
     streak : 0
 }
 
+// 
+
 /* Useful web-specific constants. */
+
+var lock = false;
 
 const HOST_URL = "http://www.reddit.com/r/";
 
@@ -42,6 +47,24 @@ const badWords = [
     "photos of",
     "tips for"
 ]
+
+$(document).ready(() => {
+   
+    // Initialise user profile from cookies if they exist.
+    if(Cookies.get('correct') != null) {
+        user.correct = Cookies.get('correct');
+    };
+    if(Cookies.get('incorrect') != null) {
+        user.incorrect = Cookies.get('correct');
+    };
+    if(Cookies.get('streak') != null) {
+        user.streak = Cookies.get('streak');
+    };
+    
+    displayUserStreak();
+    displayUserPercentCorrect();
+    
+});
 
 /* MODEL */
 
@@ -121,10 +144,7 @@ function iterate() {
             currentArticle.from = response[0].data.children[0].data.subreddit.toLowerCase() || null;
             
             // Get the link of the retrieved article.
-            currentArticle.link = response[0].data.children[0].data.link || null;
-            
-            // Get a picture if it exists.
-            currentArticle.image = response[0].data.children[0].data.preview.images[0].source.url || null;
+            currentArticle.link = response[0].data.children[0].data.url;
             
             // Ensure the response was valid to some extent.
             if(currentArticle.from == null || currentArticle.title == null) {
@@ -152,13 +172,15 @@ function iterate() {
  */
 function answer(userAnswer) {
     
-    // Increment the number of attempts made thus far.
-    user.attempts++;
+    if(lock) {
+        return;
+    }
+    lock = true;
     
-    console.log("User answer: " + userAnswer);
+    // Store easy branch.
+    var correct = (userAnswer == currentArticle.from);
     
-    // Success...
-    if(userAnswer == currentArticle.from) {
+    if(correct) {
         
         // Log the result in the RTDB.
         database.ref('meta/totalcorrect').transaction(function(total) {
@@ -167,14 +189,15 @@ function answer(userAnswer) {
             }
         });
         
-        // Display that the user was correct.
-        displayCorrect();
+        user.correct++;
+        
+        // Update this user value.
+        Cookies.set('correct', user.correct, { expires: 7 });
         
         // Increment the user's correct streak.
         user.streak++;
         
     }
-    // Failure...
     else {
         
         // Log the result in the RTDB.
@@ -184,22 +207,24 @@ function answer(userAnswer) {
             }
         });
         
-        // Display that the user was incorrect.
-        displayIncorrect();
+        user.incorrect++;
+        
+        // Update this user value.
+        Cookies.set('incorrect', user.incorrect, { expires: 7 });
         
         // Erase the user's correct streak.
         user.streak = 0;
         
     }
     
-    displayUserAttempts();
+    // Update user streak.
+    Cookies.set('streak', user.streak, { expires: 7 });
+    
+    displayUserPercentCorrect();
     
     displayUserStreak();
-    
-    displayPreviousArticle();
-    
-    // Advance to the next article.
-    iterate();
+
+    displayResult(correct);
     
 }
 
@@ -210,40 +235,14 @@ function answer(userAnswer) {
  */
 function displayNextArticle() {
 
+    // Update the toast.
+    $('#toast').text('BREAKING NEWS:');
+    
     // Update the title.
     $('#article-title').text(currentArticle.title);
+    
+    lock = false;
 
-}
-
-/**
- *  Unveil the previous article's link and image.
- */
-function displayPreviousArticle() {
-    
-    if(currentArticle.image) {
-        //$('#thumbnail').attr('src', currentArticle.image);
-    }
-    
-}
-
-/**
- *  Provide visual cues to the user to indicate
- *  their correct choice.
- */
-function displayCorrect() {
-    
-    //$('#mark').text('Correct');
-    
-}
-
-/**
- *  Provide visual cues to the user to indicate
- *  their incorrect choice.
- */
-function displayIncorrect() {
-    
-    $('#mark').text('Incorrect');
-    
 }
 
 /**
@@ -256,12 +255,49 @@ function displayUserStreak() {
     
 }
 
-/**
- * Provide visual cues to the user to indicate
- * their overall success.
- */
-function displayUserAttempts() {
+function displayUserPercentCorrect() {
+    if(user.correct == 0) {
+        $('#user-percent').text('0%');
+    }
+    else {
+       $('#user-percent').text(Math.round((user.correct / (user.correct + user.incorrect) * 100)) + '%'); 
+    }
+}
+
+function displayResult(correct) {
     
-    $('#user-attempts').text(user.attempts);
+    if(currentArticle.link != null) {
+        if(correct) {
+            $('#article-title').html(
+                '<a href="' + currentArticle.link + '" target="_new">Correct!</a>'
+            );
+        }
+        else {
+            $('#article-title').html(
+                'Incorrect  <span><a href="' + currentArticle.link + '" target="_new">Don\'t believe it? Check it out.</span></a>'
+            );
+        }
+    }
+    else {
+        if(correct) {
+            $('#article-title').html('Correct!');
+        }
+        else {
+            $('#article-title').html('Incorrect');
+        }
+    }
+    
+    setTimeout(function() {
+        $('#toast').text('3');
+        setTimeout(function() {
+            $('#toast').text('2');
+                setTimeout(function() {
+                    $('#toast').text('1');
+                    setTimeout(function() {
+                        iterate();
+                    }, 1000);
+                }, 1000);
+        }, 1000);
+    }, 1000);
     
 }

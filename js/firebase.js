@@ -12,6 +12,9 @@
 
 var isSignedIn = false;
 
+var totalCorrect;
+var totalIncorrect;
+
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyAvnS8sxsosVUAz9cXsvqC9RE1yt4OrGt4",
@@ -37,7 +40,14 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 // Register listener on total correct posts.
+firebase.database().ref('meta/totalincorrect').on('value', function(snapshot) {
+    totalIncorrect = snapshot.val();
+    $('#people-fooled').text(snapshot.val());
+    $('#percent-global').text(Math.round((totalCorrect / (totalCorrect + totalIncorrect) * 100)) + '%');
+});
+
+// Register listener on total correct posts.
 firebase.database().ref('meta/totalcorrect').on('value', function(snapshot) {
-    console.log('Value updated!');
-    $('#total-correct').text(snapshot.val());
+    totalCorrect = snapshot.val();
+    $('#global-percent').text(Math.round((totalCorrect / (totalCorrect + totalIncorrect) * 100)) + '%');
 });

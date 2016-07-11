@@ -4,10 +4,19 @@
         
         <!-- Meta Info (SEO) -->
         <title>Is It Onion?</title>
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <meta property="og:title" content="Is it 'The Onion'?">
+        <meta property="og:site_name" content="isitonion">
+        <meta property="og:url" content="http://www.jumbledjargon.website/isitonion/">
+        <meta property="og:description" content="See if you can guess whether an article was written by 'The Onion'!">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="http://www.jumbledjargon.website/isitonion/img/share-img.jpg" />
         
         <!-- Import Scripts -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
+        <script src="js/js-cookie.js"></script>
         <script src="js/firebase.js"></script>
         <script src="js/isitonion.js"></script>
         
@@ -33,8 +42,10 @@
             <div id="controller" class="row">
             
                 <div id="buttons" class="four columns">
-                    <button id="onion" onclick="answer(R.THE_ONION)">onion</button>
-                    <button id="nottheonion" onclick="answer(R.NOT_THE_ONION)">Not The Onion</button>
+                    <div class="row">
+                        <button id="onion" class="six columns" onclick="answer(R.THE_ONION)"><img src="img/onion-button.png" />onion</button>
+                        <button id="nottheonion" class="six columns" onclick="answer(R.NOT_THE_ONION)"><img src="img/not-onion-button.png" />not onion</button>
+                    </div>
                 </div>
                 
                 <div class="eight columns">
@@ -47,8 +58,8 @@
 
                         <div id="statistics-global" class="analytics six columns">
                             <img src="img/statistics-global-icon.png" alt="global statistics icon, picture of a globe" />
-                            <p>People fooled: <span id="user-streak">...</span></p>
-                            <p>Percent Correct: <span id="user-percent">...</span></p>
+                            <p>People fooled: <span id="people-fooled">...</span></p>
+                            <p>Percent Correct: <span id="global-percent">...</span></p>
                         </div>
                     </div>
                 </div>
@@ -57,7 +68,7 @@
             
             <footer class="row">
                 <p>
-                    Created with malice by <a href="https://twitter.com/joshmarcushills" target="_new">Josh Hills</a>, 2016 | It is unaffiliated with but alludes to <a href="http://theonion.com/" target="_new">‘The Onion’</a> using data taken from <a href="http://reddit.com/r/nottheonion" title="Say goodbye to several hours..." target="_new">‘Reddit’</a>. | This site <a href="https://cookielaw.org/the-cookie-law/" title="See why" target="_self">uses cookies</a>.
+                    Created with malice by <a href="https://twitter.com/joshmarcushills" target="_new">Josh Hills</a>, 2016 | It is unaffiliated with but alludes to <a href="http://theonion.com/" target="_new">'The Onion'</a> using data taken from <a href="http://reddit.com/r/nottheonion" title="Say goodbye to several hours..." target="_new">'Reddit'</a>. | This site <a href="https://cookielaw.org/the-cookie-law/" title="See why" target="_self">uses cookies</a>.
                 </p>
             </footer>
             
