@@ -17,7 +17,7 @@ var totalIncorrect;
 
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyAvnS8sxsosVUAz9cXsvqC9RE1yt4OrGt4",
+    apiKey: "/* Not today, robots!*/",
     authDomain: "isitonion.firebaseapp.com",
     databaseURL: "https://isitonion.firebaseio.com",
     storageBucket: "isitonion.appspot.com",
