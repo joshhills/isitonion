@@ -34,7 +34,7 @@ var user = {
 
 var lock = false;
 
-const HOST_URL = "http://www.reddit.com/r/";
+const HOST_URL = "https://www.reddit.com/r/";
 
 const R = {
     THE_ONION: 'theonion',
